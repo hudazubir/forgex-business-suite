@@ -1,0 +1,38 @@
+export const projects = [
+    {
+      id: 'PRJ-001',
+      name: 'NexaPay Platform',
+      client: 'NexaPay',
+      status: 'In Progress',
+      progress: 72,
+      budget: 185000,
+      deadline: '28 Aug 2026',
+    },
+    {
+      id: 'PRJ-002',
+      name: 'Aether Command',
+      client: 'Aether Logistics',
+      status: 'In Progress',
+      progress: 48,
+      budget: 240000,
+      deadline: '15 Sep 2026',
+    },
+    {
+      id: 'PRJ-003',
+      name: 'Verde Insights',
+      client: 'Verde Group',
+      status: 'Review',
+      progress: 90,
+      budget: 98000,
+      deadline: '02 Aug 2026',
+    },
+    {
+      id: 'PRJ-004',
+      name: 'Helio Health Connect',
+      client: 'Helio Health',
+      status: 'Planning',
+      progress: 18,
+      budget: 150000,
+      deadline: '30 Oct 2026',
+    },
+  ]
