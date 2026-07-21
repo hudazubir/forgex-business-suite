@@ -1,0 +1,42 @@
+export const invoices = [
+    {
+      id: 'INV-2026-048',
+      client: 'NexaPay',
+      issuedDate: '01 Jul 2026',
+      dueDate: '15 Jul 2026',
+      amount: 42000,
+      status: 'Paid',
+    },
+    {
+      id: 'INV-2026-049',
+      client: 'Aether Logistics',
+      issuedDate: '04 Jul 2026',
+      dueDate: '18 Jul 2026',
+      amount: 36500,
+      status: 'Paid',
+    },
+    {
+      id: 'INV-2026-050',
+      client: 'Verde Group',
+      issuedDate: '08 Jul 2026',
+      dueDate: '22 Jul 2026',
+      amount: 28000,
+      status: 'Pending',
+    },
+    {
+      id: 'INV-2026-051',
+      client: 'Northstar Retail',
+      issuedDate: '10 Jun 2026',
+      dueDate: '10 Jul 2026',
+      amount: 14200,
+      status: 'Overdue',
+    },
+    {
+      id: 'INV-2026-052',
+      client: 'Helio Health',
+      issuedDate: '12 Jul 2026',
+      dueDate: '26 Jul 2026',
+      amount: 19500,
+      status: 'Pending',
+    },
+  ]

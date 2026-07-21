@@ -19,6 +19,7 @@ const router = createRouter({
     {
       path: '/',
       component: () => import('../layouts/DashboardLayout.vue'),
+      meta: { requiresAuth: true },
       children: [
         {
           path: '',
@@ -87,6 +88,23 @@ const router = createRouter({
   scrollBehavior() {
     return { top: 0 }
   },
+})
+
+router.beforeEach((to) => {
+  const isAuthenticated =
+    sessionStorage.getItem('forgex-authenticated') === 'true'
+
+  const requiresAuth = to.matched.some(
+    (route) => route.meta.requiresAuth,
+  )
+
+  if (requiresAuth && !isAuthenticated) {
+    return { name: 'login' }
+  }
+
+  if (to.name === 'login' && isAuthenticated) {
+    return { name: 'dashboard' }
+  }
 })
 
 router.afterEach((to) => {

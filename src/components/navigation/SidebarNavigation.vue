@@ -1,5 +1,6 @@
 <script setup>
-import { X } from 'lucide-vue-next'
+import { LogOut, X } from 'lucide-vue-next'
+import { useRouter } from 'vue-router'
 import { currentUser } from '../../data/user'
 import {
   financeNavigation,
@@ -12,6 +13,13 @@ defineProps({
 })
 
 const emit = defineEmits(['close'])
+const router = useRouter()
+
+function logout() {
+  sessionStorage.removeItem('forgex-authenticated')
+  emit('close')
+  router.push('/login')
+}
 </script>
 
 <template>
@@ -108,7 +116,33 @@ const emit = defineEmits(['close'])
       </div>
     </nav>
 
-    <RouterLink
+    <div class="m-4 rounded-xl border border-white/10 bg-white/5 p-3">
+      <RouterLink
+        to="/profile"
+        class="flex items-center gap-3"
+        @click="emit('close')"
+      >
+        <span class="grid size-10 place-items-center rounded-full bg-core-blue font-semibold text-[#ffffff]">
+          {{ currentUser.initials }}
+        </span>
+
+        <div class="min-w-0">
+          <p class="truncate text-sm font-semibold text-white">{{ currentUser.name }}</p>
+          <p class="truncate text-xs text-slate-400">{{ currentUser.role }}</p>
+        </div>
+      </RouterLink>
+
+      <button
+        type="button"
+        class="mt-3 flex w-full items-center gap-2 border-t border-white/10 pt-3 text-sm font-medium text-slate-400 transition hover:text-white"
+        @click="logout"
+      >
+        <LogOut class="size-4" />
+        Sign out
+      </button>
+    </div>
+
+    <!-- <RouterLink
       to="/profile"
       class="m-4 flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3 transition hover:bg-white/10"
       @click="emit('close')"
@@ -121,6 +155,6 @@ const emit = defineEmits(['close'])
         <p class="truncate text-sm font-semibold text-white">{{ currentUser.name }}</p>
         <p class="truncate text-xs text-slate-400">{{ currentUser.role }}</p>
       </div>
-    </RouterLink>
+    </RouterLink> -->
   </aside>
 </template>
