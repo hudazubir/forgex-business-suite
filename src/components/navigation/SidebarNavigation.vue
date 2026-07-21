@@ -1,7 +1,8 @@
 <script setup>
 import { LogOut, X } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
-import { currentUser } from '../../data/user'
+import { supabase } from '../../lib/supabaseClient'
+import { useAuthUser } from '../../composables/useAuthUser'
 import {
   financeNavigation,
   mainNavigation,
@@ -14,18 +15,20 @@ defineProps({
 
 const emit = defineEmits(['close'])
 const router = useRouter()
+const { displayName, initials, role, clearUser } = useAuthUser()
 
-function logout() {
-  sessionStorage.removeItem('forgex-authenticated')
+async function logout() {
+  await supabase.auth.signOut()
+  clearUser()
   emit('close')
-  router.push('/login')
+  router.replace('/login')
 }
 </script>
 
 <template>
   <div
     v-if="isOpen"
-    class="fixed inset-0 z-40 bg-slate-950/50 lg:hidden"
+    class="fixed inset-0 z-40 bg-slate-950/50 lg:hidden" 
     @click="emit('close')"
   />
 
@@ -123,12 +126,12 @@ function logout() {
         @click="emit('close')"
       >
         <span class="grid size-10 place-items-center rounded-full bg-core-blue font-semibold text-[#ffffff]">
-          {{ currentUser.initials }}
+          {{ initials }}
         </span>
 
         <div class="min-w-0">
-          <p class="truncate text-sm font-semibold text-white">{{ currentUser.name }}</p>
-          <p class="truncate text-xs text-slate-400">{{ currentUser.role }}</p>
+          <p class="truncate text-sm font-semibold text-white">{{ displayName }}</p>
+          <p class="truncate text-xs text-slate-400">{{ role }}</p>
         </div>
       </RouterLink>
 

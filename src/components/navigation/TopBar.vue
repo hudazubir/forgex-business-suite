@@ -2,11 +2,12 @@
 import { Bell, Menu, Search } from 'lucide-vue-next'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { currentUser } from '../../data/user'
+import { useAuthUser } from '../../composables/useAuthUser'
 
 defineEmits(['toggle-sidebar'])
 
 const route = useRoute()
+const { initials } = useAuthUser()
 
 const pageTitle = computed(() => {
   return (route.meta.title || 'Dashboard | ForgeX Core')
@@ -51,7 +52,7 @@ const pageTitle = computed(() => {
       </button>
 
       <RouterLink to="/profile" class="grid size-9 place-items-center rounded-full bg-core-blue text-sm font-semibold text-[#ffffff]">
-        {{ currentUser.initials }}
+        {{ initials }}
       </RouterLink>
     </div>
   </header>

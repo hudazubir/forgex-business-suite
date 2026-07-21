@@ -1,3 +1,10 @@
 App.vue - permulaan sebuah page. 
 npm install vue-router@4 - kalau ada folder router
 npm install lucide-vue-next - professional icon library
+
+npm install @supabase/supabase-js - database
+    Authentication -> users
+    D!gitalf0rgEx8@ - superadmin@forgexdigital.my
+    password123
+    
+npm install html2canvas jspdf - convert to pdf

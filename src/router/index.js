@@ -1,3 +1,4 @@
+import { supabase } from '../lib/supabaseClient'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -90,19 +91,20 @@ const router = createRouter({
   },
 })
 
-router.beforeEach((to) => {
-  const isAuthenticated =
-    sessionStorage.getItem('forgex-authenticated') === 'true'
+router.beforeEach(async (to) => {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession()
 
   const requiresAuth = to.matched.some(
     (route) => route.meta.requiresAuth,
   )
 
-  if (requiresAuth && !isAuthenticated) {
+  if (requiresAuth && !session) {
     return { name: 'login' }
   }
 
-  if (to.name === 'login' && isAuthenticated) {
+  if (to.name === 'login' && session) {
     return { name: 'dashboard' }
   }
 })

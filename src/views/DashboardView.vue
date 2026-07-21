@@ -9,6 +9,17 @@ import { recentActivities } from '../data/activities'
 import { expenseSummary } from '../data/expenses'
 import { projects } from '../data/projects'
 import { monthlyRevenue, revenueSummary } from '../data/revenue'
+import { useAuthUser } from '../composables/useAuthUser'
+
+
+const { displayName } = useAuthUser()
+
+const currentDate = new Intl.DateTimeFormat('en-MY', {
+  weekday: 'long',
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+}).format(new Date())
 
 const profit = revenueSummary.currentMonth - expenseSummary.currentMonth
 
@@ -48,9 +59,9 @@ const stats = [
   <section>
     <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
       <div>
-        <p class="text-sm font-medium text-slate-500">Monday, 20 July 2026</p>
+        <p class="text-sm font-medium text-slate-500">{{ currentDate }}</p>
         <h2 class="mt-1 text-3xl font-bold tracking-tight text-core-950">
-          Good morning, Nurhuda
+          Good morning, {{ displayName }}
         </h2>
       </div>
 

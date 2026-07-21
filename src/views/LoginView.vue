@@ -1,15 +1,33 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { supabase } from '../lib/supabaseClient'
 
 const router = useRouter()
 
-const email = ref('daniel.rahman@forgexdigital.com')
+const email = ref('')
 const password = ref('')
+const errorMessage = ref('')
+const loading = ref(false)
 
-function signIn() {
-  sessionStorage.setItem('forgex-authenticated', 'true')
-  router.push('/')
+async function signIn() {
+  errorMessage.value = ''
+  loading.value = true
+
+  const { error } = await supabase.auth.signInWithPassword({
+    email: email.value,
+    password: password.value,
+  })
+
+  loading.value = false
+
+  if (error) {
+    console.error(error)
+    errorMessage.value = error.message
+    return
+  }
+
+  router.replace('/')
 }
 </script>
 
@@ -49,6 +67,7 @@ function signIn() {
             required
             type="email"
             class="mt-2 w-full rounded-lg border border-slate-300 px-3 py-3 text-slate-800 outline-none focus:border-core-blue"
+            placeholder="Enter your work email"
           >
         </label>
 
@@ -63,11 +82,19 @@ function signIn() {
           >
         </label>
 
+        <p
+          v-if="errorMessage"
+          class="rounded-lg bg-red-50 px-4 py-3 text-sm text-core-red"
+        >
+          {{ errorMessage }}
+        </p>
+
         <button
-          type="submit"
+          type="submit" :disabled="loading"
           class="w-full rounded-lg bg-core-blue px-4 py-3 font-semibold text-[#ffffff] transition hover:bg-blue-700"
         >
-          Sign in
+          <!-- Sign in -->
+          {{ loading ? 'Signing in...' : 'Sign in' }}
         </button>
       </form>
 
