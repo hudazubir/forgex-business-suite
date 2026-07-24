@@ -28,8 +28,8 @@ defineProps({
         <tbody class="divide-y divide-slate-100">
           <tr v-for="project in projects" :key="project.id" class="hover:bg-slate-50">
             <td class="px-6 py-4">
-              <p class="font-semibold text-core-950">{{ project.name }}</p>
-              <p class="mt-1 text-xs text-slate-500">{{ project.id }}</p>
+              <p class="font-semibold text-core-950">{{ project.title }}</p>
+              <p class="mt-1 text-xs text-slate-500">{{ project.code }} · {{ project.service }}</p>
             </td>
 
             <td class="px-6 py-4 text-sm text-slate-700">

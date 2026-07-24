@@ -1,19 +1,75 @@
 <script setup>
-import { computed, ref } from 'vue'
-import { Building2, CircleDollarSign, FolderKanban, UserRound } from 'lucide-vue-next'
+import { computed, onMounted, ref } from 'vue'
+import {
+  Building2,
+  CircleDollarSign,
+  FolderKanban,
+  UserRound,
+} from 'lucide-vue-next'
 import StatCard from '../../components/common/StatCard.vue'
 import ClientTable from '../../components/clients/ClientTable.vue'
 import { formatCurrency } from '../../composables/useCurrency'
-import { clients } from '../../data/clients'
+import { supabase } from '../../lib/supabaseClient'
+import ClientFormModal from '../../components/clients/ClientFormModal.vue'
 
+const databaseClients = ref([])
 const searchQuery = ref('')
+const loading = ref(true)
+const errorMessage = ref('')
+
+const isClientFormOpen = ref(false)
+
+async function handleClientSaved() {
+  await loadClients()
+}
+
+async function loadClients() {
+  loading.value = true
+  errorMessage.value = ''
+
+  const { data, error } = await supabase
+    .from('clients')
+    .select('*')
+    .order('company_name')
+
+  loading.value = false
+
+  if (error) {
+    errorMessage.value = error.message
+    return
+  }
+
+  databaseClients.value = data
+}
+
+/*
+  This converts Supabase column names such as company_name
+  into the existing names expected by ClientTable.vue.
+*/
+const clients = computed(() => {
+  return databaseClients.value.map((client) => ({
+    ...client,
+    company: client.company_name,
+    contactName: client.contact_name,
+    email: client.contact_email,
+    phone: client.contact_phone,
+    totalValue: Number(client.lifetime_value),
+    activeProjects: 0,
+    initials: client.company_name
+      .split(' ')
+      .map((word) => word[0])
+      .join('')
+      .slice(0, 2)
+      .toUpperCase(),
+  }))
+})
 
 const filteredClients = computed(() => {
   const query = searchQuery.value.toLowerCase().trim()
 
-  if (!query) return clients
+  if (!query) return clients.value
 
-  return clients.filter((client) => {
+  return clients.value.filter((client) => {
     return [
       client.company,
       client.industry,
@@ -24,16 +80,24 @@ const filteredClients = computed(() => {
 })
 
 const totalClientValue = computed(() => {
-  return clients.reduce((total, client) => total + client.totalValue, 0)
+  return clients.value.reduce(
+    (total, client) => total + client.totalValue,
+    0,
+  )
 })
 
 const activeClients = computed(() => {
-  return clients.filter((client) => client.status === 'Active').length
+  return clients.value.filter((client) => client.status === 'Active').length
 })
 
 const activeProjects = computed(() => {
-  return clients.reduce((total, client) => total + client.activeProjects, 0)
+  return clients.value.reduce(
+    (total, client) => total + client.activeProjects,
+    0,
+  )
 })
+
+onMounted(loadClients)
 </script>
 
 <template>
@@ -49,9 +113,17 @@ const activeProjects = computed(() => {
         </p>
       </div>
 
+      <!-- <button
+        type="button"
+        class="rounded-lg bg-core-blue px-4 py-2.5 text-sm font-semibold text-[#ffffff] hover:bg-blue-700"
+      >
+        Add client
+      </button> -->
+
       <button
         type="button"
         class="rounded-lg bg-core-blue px-4 py-2.5 text-sm font-semibold text-[#ffffff] hover:bg-blue-700"
+        @click="isClientFormOpen = true"
       >
         Add client
       </button>
@@ -99,7 +171,21 @@ const activeProjects = computed(() => {
         >
       </div>
 
-      <ClientTable :clients="filteredClients" />
+      <p v-if="loading" class="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
+        Loading clients...
+      </p>
+
+      <p v-else-if="errorMessage" class="rounded-xl border border-red-200 bg-red-50 p-6 text-sm text-red-600">
+        Unable to load clients: {{ errorMessage }}
+      </p>
+
+      <ClientTable v-else :clients="filteredClients" />
     </div>
+
+    <ClientFormModal
+      :open="isClientFormOpen"
+      @close="isClientFormOpen = false"
+      @saved="handleClientSaved"
+    />
   </section>
 </template>
